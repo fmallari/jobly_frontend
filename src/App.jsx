@@ -4,6 +4,7 @@ import Companies from "./pages/Companies";
 import CompanyDetail from "./pages/CompanyDetail";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Jobs from "./pages/Jobs";
 import { AuthContext } from "./auth/AuthContext";
 
 function Home() {
@@ -23,6 +24,7 @@ export default function App() {
       <nav style={{ display: "flex", gap: 12, padding: 16, alignItems: "center" }}>
         <Link to="/">Home</Link>
         <Link to="/companies">Companies</Link>
+        <Link to="/jobs">Jobs</Link>
 
         <div style={{ marginLeft: "auto", display: "flex", gap: 12, alignItems: "center" }}>
           {isLoggedIn ? (
@@ -47,6 +49,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/jobs" element={<Jobs />} />
         <Route path="/companies" element={<Companies />} />
         <Route path="/companies/:handle" element={<CompanyDetail />} />
       </Routes>
