@@ -1,9 +1,10 @@
+// src/api.js
 import axios from "axios";
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
 
 class JoblyApi {
-  static token;
+  static token = null;
 
   static async request(endpoint, data = {}, method = "get") {
     const url = `${BASE_URL}/${endpoint}`;
@@ -23,9 +24,37 @@ class JoblyApi {
     }
   }
 
-  static async getCompanies() {
+  // login and register
+
+static setToken(token) {
+  JoblyApi.token = token;
+}
+
+static async login({ username, password }) {
+  const res = await this.request("auth/token", { username, password }, "post");
+  return res.token;
+}
+
+  // supports optional search by name: /companies?name=apple
+  static async getCompanies(term) {
+  if (!term) {
     const res = await this.request("companies");
     return res.companies;
+  }
+
+  // Try nameLike first (common in some Jobly versions), then fall back to name
+  try {
+    const res = await this.request("companies", { nameLike: term });
+    return res.companies;
+  } catch (err) {
+    const res = await this.request("companies", { name: term });
+    return res.companies;
+  }
+}
+  // ✅ company detail: /companies/:handle
+  static async getCompany(handle) {
+    const res = await this.request(`companies/${handle}`);
+    return res.company;
   }
 }
 
