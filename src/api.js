@@ -23,8 +23,18 @@ class JoblyApi {
       throw Array.isArray(message) ? message : [message];
     }
   }
+  // Registration page
+static async register({ username, password, firstName, lastName, email }) {
+  console.log("STEP 3: JoblyApi.register calling /auth/register");
 
-  // login and register
+  const res = await this.request(
+    "auth/register",
+    { username, password, firstName, lastName, email },
+    "post"
+  );
+  return res.token;
+}
+  // Sign in page
 
 static setToken(token) {
   JoblyApi.token = token;

@@ -5,6 +5,7 @@ import { AuthContext } from "../auth/AuthContext";
 export default function Register() {
   const navigate = useNavigate();
   const { register } = useContext(AuthContext);
+  console.log("AuthContext value:", useContext(AuthContext));
 
   const [formData, setFormData] = useState({
     username: "",
@@ -23,17 +24,30 @@ export default function Register() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    console.log("STEP 1: Register form submitted", formData);
+
     setErrors([]);
     setIsSubmitting(true);
 
     try {
-      await register(formData);
-      navigate("/companies");
-    } catch (err) {
-      setErrors(err); // api.js throws array
-    } finally {
-      setIsSubmitting(false);
-    }
+  console.log("STEP 2: calling register()...");
+  await register(formData);
+  console.log("STEP 3: register() succeeded, navigating...");
+  navigate("/companies");
+} catch (err) {
+  console.log("STEP X: register() failed:", err);
+  setErrors(err);
+}
+
+    // try {
+    //   await register(formData);
+    //   navigate("/companies");
+    // } catch (err) {
+    //   setErrors(err); // api.js throws array
+    // } finally {
+    //   setIsSubmitting(false);
+    // }
   }
 
   return (
@@ -109,7 +123,7 @@ export default function Register() {
           />
         </label>
 
-        <button type="submit" disabled={isSubmitting} style={{ padding: "10px 14px", borderRadius: 8 }}>
+        <button type="submit" disabled={isSubmitting} onClick={() => console.log("BUTTON CLICKED ✅")} style={{ padding: "10px 14px", borderRadius: 8 }}>
           {isSubmitting ? "Creating..." : "Create account"}
         </button>
       </form>
