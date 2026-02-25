@@ -5,7 +5,9 @@ import CompanyDetail from "./pages/CompanyDetail";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Jobs from "./pages/Jobs";
+import Applications from "./pages/Applications";
 import { AuthContext } from "./auth/AuthContext";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 function Home() {
   return (
@@ -25,6 +27,7 @@ export default function App() {
         <Link to="/">Home</Link>
         <Link to="/companies">Companies</Link>
         <Link to="/jobs">Jobs</Link>
+        {isLoggedIn && <Link to="/applications">Applications</Link>}
 
         <div style={{ marginLeft: "auto", display: "flex", gap: 12, alignItems: "center" }}>
           {isLoggedIn ? (
