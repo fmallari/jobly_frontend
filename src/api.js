@@ -46,9 +46,9 @@ static async login({ username, password }) {
 
   // supports optional search by name: /companies?name=apple
   static async getCompanies(term) {
-  if (!term) {
-    const res = await this.request("companies");
-    return res.companies;
+    if (!term) {
+      const res = await this.request("companies");
+      return res.companies;
   }
 
   // Try nameLike first (common in some Jobly versions), then fall back to name
