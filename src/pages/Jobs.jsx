@@ -9,10 +9,10 @@ export default function Jobs() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const { isLoggedIn, username, applyToJob, applications } = useContext(AuthContext);
+  const { isLoggedIn, applications, applyToJob} = useContext(AuthContext);
 
-  const appliedJobIds = new Set(applications.map(a => a.jobId));
-
+  const appliedJobIds = new Set((applications || []).map(a => a.jobId));
+  
   async function handleApply(jobId) {
     try {
       await applyToJob(jobId);

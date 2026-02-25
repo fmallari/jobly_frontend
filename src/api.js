@@ -92,7 +92,8 @@ static async getJobs(term) {
 // Get applications for a user (backend should implement GET /users/:username/applications)
   static async getApplications(username) {
   const res = await this.request(`users/${username}/applications`);
-  return res.applications;
+  return res.applications ?? res.jobs ?? [];
 }
+
 }
 export default JoblyApi;
