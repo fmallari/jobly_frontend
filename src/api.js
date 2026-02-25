@@ -28,7 +28,7 @@ static async register({ username, password, firstName, lastName, email }) {
 
   const res = await this.request(
     "auth/register",
-    { username, password, firstName, lastName, email },
+    { username, password, firstName, lastName, email } ,
     "post"
   );
   return res.token;
@@ -77,11 +77,22 @@ static async getJobs(term) {
     return res.jobs;
   }
 }
-  // ✅ company detail: /companies/:handle
+  // Company detail: /companies/:handle
   static async getCompany(handle) {
     const res = await this.request(`companies/${handle}`);
     return res.company;
   }
+
+// Apply to a job for a user (backend should implement POST /users/:username/jobs/:id)
+  static async applyToJob(username, jobId) {
+  const res = await this.request(`users/${username}/jobs/${jobId}`, {}, "post");
+  return res.applied; // usually jobId
 }
 
+// Get applications for a user (backend should implement GET /users/:username/applications)
+  static async getApplications(username) {
+  const res = await this.request(`users/${username}/applications`);
+  return res.applications;
+}
+}
 export default JoblyApi;

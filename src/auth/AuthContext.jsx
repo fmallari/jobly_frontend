@@ -6,9 +6,12 @@ export const AuthContext = createContext(null);
 const TOKEN_STORAGE_KEY = "jobly_token";
 const USERNAME_STORAGE_KEY = "jobly_username";
 
+
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(localStorage.getItem(TOKEN_STORAGE_KEY));
   const [username, setUsername] = useState(localStorage.getItem(USERNAME_STORAGE_KEY));
+  const [applications, setApplications] = useState([]);
+
 
   // Sync token to API + localStorage
   useEffect(() => {
@@ -28,17 +31,37 @@ export function AuthProvider({ children }) {
     const newToken = await JoblyApi.login(credentials);
     setToken(newToken);
     setUsername(credentials.username);
+    await refreshApplications(credentials.username);
   }
 
   async function register(formData) {
     const newToken = await JoblyApi.register(formData);
     setToken(newToken);
     setUsername(formData.username);
+    await refreshApplications(formData.username);
+  }
+
+  async function refreshApplications(forUsername = username) {
+  if (!forUsername) return;
+
+  try {
+    const apps = await JoblyApi.getApplications(forUsername);
+    setApplications(apps);
+  } catch (err) {
+    console.error("Failed to load applications", err);
+    setApplications([]);
+  }
+}
+
+  async function applyToJob(jobId) {
+    await JoblyApi.applyToJob(username, jobId);
+    await refreshApplications(username);
   }
 
   function logout() {
     setToken(null);
     setUsername(null);
+    setApplications([]);
   }
 
   const value = useMemo(
@@ -47,10 +70,13 @@ export function AuthProvider({ children }) {
       username,
       isLoggedIn: !!token,
       login,
-      register, // ✅ THIS is what Register.jsx needs
+      register,
       logout,
+      applications,
+      refreshApplications,
+      applyToJob,
     }),
-    [token, username]
+    [token, username, applications]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

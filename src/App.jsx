@@ -52,6 +52,11 @@ export default function App() {
         <Route path="/jobs" element={<Jobs />} />
         <Route path="/companies" element={<Companies />} />
         <Route path="/companies/:handle" element={<CompanyDetail />} />
+        <Route path="/applications" element={
+          <ProtectedRoute>
+            <Applications />
+          </ProtectedRoute>
+        }/>
       </Routes>
     </BrowserRouter>
   );

@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { AuthContext } from "../auth/AuthContext";
 import JoblyApi from "../api";
 
 export default function Jobs() {
@@ -7,6 +8,19 @@ export default function Jobs() {
   const [submittedSearch, setSubmittedSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const { isLoggedIn, username, applyToJob, applications } = useContext(AuthContext);
+
+  const appliedJobIds = new Set(applications.map(a => a.jobId));
+
+  async function handleApply(jobId) {
+    try {
+      await applyToJob(jobId);
+      alert("Applied!");
+    } catch (err) {
+      alert(err?.[0] || "Failed to apply");
+    }
+  }
 
   useEffect(() => {
     async function fetchJobs() {
@@ -63,21 +77,36 @@ export default function Jobs() {
         <p>No jobs found{submittedSearch ? ` for "${submittedSearch}"` : ""}.</p>
       )}
 
-      {!loading && !error && jobs.map((j) => (
-        <div
-          key={j.id}
-          style={{ border: "1px solid #ddd", borderRadius: 12, padding: 14, marginBottom: 12 }}
-        >
-          <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-            <strong>{j.title}</strong>
-            <span style={{ opacity: 0.7 }}>{j.companyName ?? j.companyHandle ?? ""}</span>
-          </div>
+      {!loading && !error &&
+        jobs.map((j) => (
+          <div
+            key={j.id}
+            style={{ border: "1px solid #ddd", borderRadius: 12, padding: 14, marginBottom: 12 }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+              <strong>{j.title}</strong>
+              <span style={{ opacity: 0.7 }}>{j.companyName ?? j.companyHandle ?? ""}</span>
+            </div>
 
-          <div style={{ opacity: 0.85, marginTop: 8 }}>
-            Salary: {j.salary ?? "—"} • Equity: {j.equity ?? "—"}
+            <div style={{ opacity: 0.85, marginTop: 8 }}>
+              Salary: {j.salary ?? "—"} • Equity: {j.equity ?? "—"}
+            </div>
+
+            {isLoggedIn && (
+              appliedJobIds.has(j.id) ? (
+              <button disabled style={{ marginTop: 10, padding: "8px 12px", borderRadius: 8, backgroundColor: "#ddd" }}>
+                Applied
+              </button>
+            ) : (
+              <button
+                onClick={() => handleApply(j.id)}
+                style={{ marginTop: 10, padding: "8px 12px", borderRadius: 8 }}
+              >
+                Apply
+              </button>
+            ))}
           </div>
-        </div>
-      ))}
+        ))}
     </div>
   );
 }
