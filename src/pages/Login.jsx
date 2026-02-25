@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AuthContext } from "../auth/AuthContext";
 
 export default function Login() {
@@ -24,7 +24,6 @@ export default function Login() {
       await login(formData);
       navigate("/companies");
     } catch (err) {
-      // api.js throws an array of messages
       setErrors(err);
     } finally {
       setIsSubmitting(false);
@@ -32,49 +31,61 @@ export default function Login() {
   }
 
   return (
-    <div style={{ padding: 16, maxWidth: 420, margin: "0 auto" }}>
-      <h2>Sign In</h2>
+    <div className="page-container py-10">
+      <div className="form-wrap">
+        <h2 className="form-title">Sign in</h2>
+        <p className="mt-2 text-sm text-gray-600">
+          Welcome back. Sign in to apply to jobs and track your applications.
+        </p>
 
-      {errors.length > 0 && (
-        <div style={{ marginTop: 12, padding: 12, border: "1px solid #f3c", borderRadius: 8 }}>
-          {errors.map((e) => (
-            <div key={e}>{e}</div>
-          ))}
+        <div className="form-card">
+          {errors.length > 0 && (
+            <div className="error-box">
+              {errors.map((e) => (
+                <div key={e}>{e}</div>
+              ))}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="mt-4 space-y-4">
+            <div>
+              <label className="label">Username</label>
+              <input
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                autoComplete="username"
+                className="input"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="label">Password</label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                autoComplete="current-password"
+                className="input"
+                required
+              />
+            </div>
+
+            <button type="submit" disabled={isSubmitting} className="btn-primary w-full">
+              {isSubmitting ? "Signing in..." : "Sign in"}
+            </button>
+
+            <p className="text-center text-sm text-gray-600">
+              Don’t have an account?{" "}
+              <Link className="font-semibold text-gray-900 hover:underline" to="/register">
+                Create one
+              </Link>
+            </p>
+          </form>
         </div>
-      )}
-
-      <form onSubmit={handleSubmit} style={{ marginTop: 12, display: "grid", gap: 10 }}>
-        <label>
-          Username
-          <input
-            name="username"
-            value={formData.username}
-            onChange={handleChange}
-            autoComplete="username"
-            style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid #ddd" }}
-          />
-        </label>
-
-        <label>
-          Password
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            autoComplete="current-password"
-            style={{ width: "100%", padding: 10, borderRadius: 8, border: "1px solid #ddd" }}
-          />
-        </label>
-
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          style={{ padding: "10px 14px", borderRadius: 8 }}
-        >
-          {isSubmitting ? "Signing in..." : "Sign In"}
-        </button>
-      </form>
+      </div>
     </div>
   );
 }

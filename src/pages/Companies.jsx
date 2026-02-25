@@ -39,57 +39,61 @@ export default function Companies() {
   }
 
   return (
-    <div style={{ padding: 16, maxWidth: 900, margin: "0 auto" }}>
-      <h2 style={{ marginBottom: 12 }}>Companies</h2>
+    <div className="page-container py-10">
+      <div className="mb-6">
+        <h2 className="text-2xl font-semibold tracking-tight text-gray-900">Companies</h2>
+        <p className="mt-1 text-sm text-gray-600">Browse companies and view open roles.</p>
+      </div>
 
-      <form onSubmit={handleSubmit} style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+      <form onSubmit={handleSubmit} className="search-bar mb-8">
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search companies by name..."
-          style={{ flex: 1, padding: 10, borderRadius: 8, border: "1px solid #ddd" }}
+          className="search-input"
         />
-        <button type="submit" style={{ padding: "10px 14px", borderRadius: 8 }}>
+        <button type="submit" className="btn-primary">
           Search
         </button>
-        <button type="button" onClick={handleClear} style={{ padding: "10px 14px", borderRadius: 8 }}>
+        <button type="button" onClick={handleClear} className="btn-outline">
           Clear
         </button>
       </form>
 
-      {loading && <p>Loading companies...</p>}
-      {!loading && error && <p>{error}</p>}
+      {loading && <p className="text-gray-600">Loading companies...</p>}
+      {!loading && error && <p className="text-rose-700">{error}</p>}
 
       {!loading && !error && companies.length === 0 && (
-        <p>No companies found{submittedSearch ? ` for "${submittedSearch}"` : ""}.</p>
+        <p className="text-gray-600">
+          No companies found{submittedSearch ? ` for "${submittedSearch}"` : ""}.
+        </p>
       )}
 
-      {!loading && !error && companies.map((c) => (
-        <Link
-          key={c.handle}
-          to={`/companies/${c.handle}`}
-          style={{
-            display: "block",
-            textDecoration: "none",
-            color: "inherit",
-            marginBottom: 12,
-          }}
-        >
-          <div
-            style={{
-              padding: 14,
-              border: "1px solid #ddd",
-              borderRadius: 12,
-            }}
-          >
-            <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
-              <strong>{c.name}</strong>
-              <span style={{ opacity: 0.7 }}>{c.numEmployees ?? "—"} employees</span>
-            </div>
-            <p style={{ marginTop: 8, opacity: 0.9 }}>{c.description}</p>
-          </div>
-        </Link>
-      ))}
+      <div className="space-y-4">
+        {!loading &&
+          !error &&
+          companies.map((c) => (
+            <Link
+              key={c.handle}
+              to={`/companies/${c.handle}`}
+              className="block"
+            >
+              <div className="card group transition-all duration-200 hover:-translate-y-1 hover:shadow-lg hover:ring-gray-300 cursor-pointer">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h3 className="text-lg font-semibold tracking-tight text-gray-900 group-hover:text-black transition-colors">
+                      {c.name}
+                    </h3>
+                    <p className="card-subtitle">{c.description}</p>
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {c.numEmployees ?? "—"} employees
+                  </div>
+                </div>
+              </div>
+            </Link>
+          ))}
+      </div>
     </div>
   );
 }
